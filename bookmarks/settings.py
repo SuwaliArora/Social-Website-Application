@@ -136,3 +136,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MEDIA_URL = '/media/'     # MEDIA_URL is the base URL to serve	the	media files	uploaded by	users
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')    # MEDIA_ROOT is the local	path where they	reside.
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  #default ModelBackend i.e used to authenticate with username and password
+    'account.authentication.EmailAuthBackend',  #our own email-based authentication backend
+]
