@@ -28,3 +28,6 @@ class Image(models.Model):
 
     users_like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='iamges_liked', blank=True)
     #manytomany relation coz many images can be liked by many users
+    
+    def get_absolute_url(self):
+        return reverse("images:detail", args=[self.id, self.slug])
