@@ -1,7 +1,7 @@
 //jQuery loader script
 (function(){
     var jquery_version = '3.3.1';    // jquery version to load
-    var site_url = 'http://3f6ad53c.ngrok.io/';   //the base url for our website
+    var site_url = 'http://2f32691c7987.ngrok.io/';   //the base url for our website
     var static_url = site_url + 'static/';   //base static files url
     var min_width = 100;   //min width & height in px for images
     var min_height = 100;
@@ -61,7 +61,7 @@ function bookmarklet(msg)
     jQuery('#bookmarklet #close').click(function(){
         jQuery('#bookmarklet').remove();
     });
-};
+
 
 //find images and display them
 jQuery.each(jQuery('img[src$="jpg"]'), function(index, image){
@@ -71,3 +71,14 @@ jQuery.each(jQuery('img[src$="jpg"]'), function(index, image){
         jQuery('#bookmarklet .images').append('<a href="#"><img src="'+ image_url +'" /></a>');
     }
 });
+
+//when an image is selected open URL with it
+jQuery('#bookmarklet .images a').click(function(e){   //click event to imgs link element
+    selected_image = jQuery(this).children('img').attr('src');  // variable selected_image contains the url of selected img
+    //hide bookmarklet
+    jQuery('#bookmarklet').hide();
+    //open new window to submit the image
+    window.open(site_url + 'images/create/?url=' + encodeURIComponent(jQuery('title').text())
+    + '&title=' + encodeURIComponent(jQuery('title').text()),'_blank');
+});
+};
