@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',   
     'social_django',
     'images.apps.ImagesConfig',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [ 	#middleware	is a class with methods	that are globally executed during the request or response phase.	
