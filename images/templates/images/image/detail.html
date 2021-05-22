@@ -1,0 +1,37 @@
+<!--This is	the	template to	display	the	detail of a	bookmarked image.-->
+{% extends "base.html" %}
+{% block title %}{{ image.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ image.title }}</h1>
+{% load thumbnail %}
+{% thumbnail image.image "300" as im %}  <!--fixed width of 300 pixels -->
+<a href="{{ image.image.url }}">
+    <img src="{{ im.url }}" class="image-detail">
+</a>
+{% endthumbnail %}
+
+
+<!--Using	the	{%	with	%}	template	tag	is	useful	to	prevent	Django	from
+evaluating	QuerySets	multiple	times.-->
+{% with total_likes=image.users_like.count %} <!-- use {% with %} tag to store the result of QuerySet, counting all user likes-->
+<div class="iamge-info">
+    <div>
+        <span class="count">
+            {{ total_likes }} like{{ total_likes|pluralize }}
+        </span>
+    </div>
+    {{ image.description|linebreaks }}
+</div>
+<div class="images-likes">
+    {% for user in image.users_like.all %} <!-- to display all the users who like this image-->
+    <div>
+        <img src="{{ user.profile.photo.url }}">
+        <p>{{ user.first_name }}</p>
+    </div>
+    {% empty %}
+    Nobody likes this image yet.
+    {% endfor %}
+</div>
+{% endwith %}
+{% endblock %}
