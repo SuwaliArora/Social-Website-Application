@@ -10,7 +10,7 @@
         <div id="header">
             <span class="logo">Bookmarks</span>
             {% if request.user.is_authenticated %}
-            <ul class="meny">
+            <ul class="menu">
                 <li {% if section == "dashboard" %} class="selected" {% endif %}>
                     <a href="{% url "dashboard" %}">My dashboard</a>
                 </li>
@@ -31,7 +31,7 @@
                 {% else %}
                 <a href="{% url "login" %}">Log-in</a>
                 {% endif %}
-             </span>
+            </span>
         </div>
         {% if messages %}
         <ul class="messages">
@@ -47,5 +47,31 @@
             {% block content %}
             {% endblock %}
         </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+        </script>
+        <!-- script for loading js cookie plugin frm public CDN so we can interact with cookies-->
+        <script	src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js">
+        </script>
+        <script>
+            var csrftoken = Cookies.get('csrftoken');  //read value of csrftoken cookie with cookies.get()
+            // function to check whether an http method is safe or not
+            function csrfSafeMethod(method){  
+                //these HTTP methods do not require csrf protection 
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            $.ajaxSetup({ //set jquery ajax requests using a $.ajaxSetUp()
+                beforeSend: function(xhr, settings){
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain);
+                }
+            }
+            });
+        </script>
+        <script>
+            $(document).ready(function()
+            {
+                {% block domready %}
+                {% endblock %}
+            });
+        </script>
     </body>
 </html>
