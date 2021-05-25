@@ -47,7 +47,8 @@ evaluating	QuerySets	multiple	times.-->
 $('a.like').click(function(e){   <!--$('a.like')	jQuery	selector	to	find	all	<a>	elements
     of	the	HTML	document	with	the	like	class.-->
     e.preventDefault();           <!--e.preventDefault() to	avoid the	default	behavior of	the	<a>	element.-->
-    $.post('{% "images:like" %}',
+    $.post('{% "images:like" %}', <!-- error -->
+    $.post('{% url "images:like" %}',
     {
         id: $(this).data('id'),
         action: $(this).data('action')
