@@ -1,10 +1,14 @@
+from django.core import paginator
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ImageCreateForm
 from .models import Image
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
+from common.decorators import ajax_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 @login_required        # login_required	decorator to image_create view to prevent access for unauthenticated users
@@ -32,8 +36,9 @@ def image_create(request):
 #simple detail view to display an image that has saved into our site
 def image_detail(request, id, slug):
     image = get_object_or_404(Image, id=id, slug=slug)
-    return render(request, 'iamges/image/detail.html', {'section': 'images', 'image': image})
+    return render(request, 'images/image/detail.html', {'section': 'images', 'image': image})
 
+@ajax_required
 @login_required
 @require_POST
 def image_like(request):
@@ -50,3 +55,25 @@ def image_like(request):
         except:
             pass
     return JsonResponse({'status':'ko'})    #jsonresponse provided by django, returns http response
+
+@login_required
+def image_list(request):
+    images = Image.objects.all()
+    paginator = Paginator(images, 8) #Paginator object to paginate the results
+    page = request.GET.get('page')
+    try:
+        images = paginator.page(page)
+    except PageNotAnInteger:
+        #if page is not an integer deliver the first page
+        image = paginator.page(1)
+    except EmptyPage:              #EmptyPage exception if requested page is out of range
+        if request.is_ajax():
+            #if the request is AJAX and the page is out of range
+            #return an empty page
+            return HttpResponse('')
+        #if page is out of range deliver last page of results
+        images = paginator.page(paginator.num_pages)
+    if request.is_ajax():
+        return render(request, 'images/image/list_ajax.html', {'section': 'images', 'images': images})
+    return render(request, 'images/image/list.html', {'section': 'images', 'images': images})
+    
