@@ -1,0 +1,35 @@
+<!-- this template will hold jS code for loading additional pages when scrolling to bottom of page-->
+{% extends "base.html" %}
+
+{% block title %}Images bookmarked{% endblock %}
+
+{% block content %}
+<h1>Images bookmarked</h1>
+<div id="image-list">
+    {% include "images/image/list_ajax.html" %}
+</div>
+{% endblock %}
+
+{% block domready %}
+var page = 1;   <!-- stores current page number-->
+var empty_page = false;    <!-- allows us to know whether the user is on last pg & retrieves empty pg-->
+var block_request = false;    <!--PREVENTS from sending additional req which ajax req is in progress-->
+
+$(window).scroll(function(){   <!--to capture scroll event-->
+var margin =$(document).height()- $(window).height() - 200;
+if ($(window).scrollTop()>margin && empty_page == false && block_request == false)
+{
+    block_request = true;
+    page +=1;
+    $.get('?page=' + page, function(data){
+        if(data == ''){
+            empty_page = true;
+        }
+        else {
+            block_request = false;
+            $('image-list').append(data);
+        }
+    });
+}
+});
+{% endblock %}
