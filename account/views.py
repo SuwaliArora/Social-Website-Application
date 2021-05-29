@@ -1,11 +1,13 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from django.contrib.auth.decorators import login_required
-from .models import Profile
+from .models import Profile, Contact
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
+from common.decorators import Contact
 
 # Create your views here.
 def user_login(request):  #user login view is called with a get request
