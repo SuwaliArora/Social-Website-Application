@@ -9,6 +9,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from common.decorators import ajax_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from actions.utils import create_action
 
 # Create your views here.
 @login_required        # login_required	decorator to image_create view to prevent access for unauthenticated users
@@ -23,6 +24,7 @@ def image_create(request):
             #assign current user to the item
             new_item.user = request.user
             new_item.save()
+            create_action(request.user, 'bookmarked image', new_item)
             messages.success(request, 'Image added succesfully')
 
             #redirect to new created item detail view
@@ -49,6 +51,7 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == 'like':
                 image.users_like.add(request.user)
+                create_action(request.user, 'likes', image)
             else:
                 image.users_like.remove(request.user)
             return JsonResponse({'status':'ok'})
@@ -76,4 +79,5 @@ def image_list(request):
     if request.is_ajax():
         return render(request, 'images/image/list_ajax.html', {'section': 'images', 'images': images})
     return render(request, 'images/image/list.html', {'section': 'images', 'images': images})
+    
     
