@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
 from common.decorators import ajax_required
 from actions.utils import create_action
+from actions.models import Action
 
 # Create your views here.
 def user_login(request):  #user login view is called with a get request
@@ -35,7 +36,15 @@ def user_login(request):  #user login view is called with a get request
 #login_required decorator of the authentication framework.
 @login_required
 def dashboard(request):
-    return render(request, 'account/dashboard.html', {'section': 'dashboard'})
+    # display all actions by default
+    actions = Action.objects.exclude(user=request.user)
+    following_ids = request.user.following.values_list('id', flat=True)
+    if following_ids:
+        #if user is following others, retrieve only their actions
+        actions = actions.filter(user_id__in=following_ids)    
+    actions = actions.select_related('user', 'user_profile').prefetch_related('target')[:10] #select_related() allows to retrieve realted objects for one to many relationships
+    #prefetch_related() works for many-to-many & many-to-one relations
+    return render(request, 'account/dashboard.html', {'section': 'dashboard', 'actions': actions})
 
 def register(request):
     if request.method == 'POST':
