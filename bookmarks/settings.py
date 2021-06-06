@@ -147,7 +147,22 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')    # MEDIA_ROOT is the local	path 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  #default ModelBackend i.e used to authenticate with username and password
     'account.authentication.EmailAuthBackend',  #our own email-based authentication backend
+    'social_core.backends.facebook.FaceOAuth2',   #authentication through facebook account
+    'social_core.backends.twitter.TwitterOAuth', # authentication through twitter account
+    'social_core.backends.google.GoogleOAuth2',   #authentication through Google account
 ]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'XXX' # GOOGLE CONSUMER KEY
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'XXX' #GOOGLE CONSUMER SECRET
+
+SOCIAL_AUTH_TWITTER_KEY = 'XXX' # TWITTER CONSUMER KEY
+SOCIAL_AUTH_TWITTER_SECRET = 'XXX' #TWITTER CONSUMER SECRET
+
+SOCIAL_AUTH_FACEBOOK_KEY = 'XXX' # FACEBOOK app KEY
+SOCIAL_AUTH_FACEBOOK_SECRET = 'XXX' #FACEBOOK APP SECRET
+
+#optional
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 ABSOLUTE_URL_OVERRIDES = {'auth.user': lambda u: reverse_lazy('user_detail', args=[u.username])}
 
